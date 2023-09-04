@@ -27,7 +27,7 @@ class IngresoSocio extends React.Component {
     }
 
     getSocios() {
-        axios.get('http://localhost:8000/api/socio')
+        axios.get('http://apiapr.lucasbravopy.cl/api/socio')
             .then(response => {
                 this.setState({ socios: response.data });
             })
@@ -38,7 +38,7 @@ class IngresoSocio extends React.Component {
     }
 
     getSectores() {
-        axios.get('http://localhost:8000/api/sectores')
+        axios.get('http://apiapr.lucasbravopy.cl/api/sectores')
             .then(response => {
                 this.setState({ sectores: response.data });
             })
@@ -67,7 +67,7 @@ class IngresoSocio extends React.Component {
 
         console.log(nuevoSocio);
         
-        axios.post('http://localhost:8000/api/socio', nuevoSocio)
+        axios.post('http://apiapr.lucasbravopy.cl/api/socio', nuevoSocio)
             .then(response => {
                 console.log(response);
                 this.getSocios();
@@ -80,7 +80,7 @@ class IngresoSocio extends React.Component {
     }
 
     handleDelete(socioId) {
-        axios.delete(`http://localhost:8000/api/socio/${socioId}`)
+        axios.delete(`http://apiapr.lucasbravopy.cl/api/socio/${socioId}`)
             .then(response => {
                 console.log(response);
                 this.getSocios();

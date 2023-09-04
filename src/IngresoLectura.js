@@ -55,7 +55,7 @@ class IngresoLectura extends React.Component {
 
     // Recuperar la lista de tramos desde el backend
     getTramos() {
-        axios.get('http://localhost:8000/api/tramos')
+        axios.get('http://apiapr.lucasbravopy.cl/api/tramos')
             .then(response => {
                 this.setState({ tramos: response.data });
             })
@@ -66,7 +66,7 @@ class IngresoLectura extends React.Component {
 
     // Agregar un nuevo tramo
     addTramo() {
-        axios.post('http://localhost:8000/api/tramos', {
+        axios.post('http://apiapr.lucasbravopy.cl/api/tramos', {
             nombre: this.state.nombreTramo,
             inicio: this.state.inicioTramo,
             fin: this.state.finTramo,
@@ -88,7 +88,7 @@ class IngresoLectura extends React.Component {
     }
 
     getServiciosDisponibles() {
-        axios.get('http://localhost:8000/api/servicios')
+        axios.get('http://apiapr.lucasbravopy.cl/api/servicios')
             .then(response => {
                 this.setState({ serviciosDisponibles: response.data });
             })
@@ -98,7 +98,7 @@ class IngresoLectura extends React.Component {
     }
 
     getProcesos() {
-        axios.get('http://localhost:8000/api/procesos')
+        axios.get('http://apiapr.lucasbravopy.cl/api/procesos')
             .then(response => {
                 this.setState({ procesos: response.data });
             })
@@ -109,7 +109,7 @@ class IngresoLectura extends React.Component {
 
     getSocios() {
         if (this.state.selectedProceso) {
-        axios.get(`http://localhost:8000/api/socio/${this.state.selectedProceso.id}`, {
+        axios.get(`http://apiapr.lucasbravopy.cl/api/socio/${this.state.selectedProceso.id}`, {
         })
         .then(response => {
             this.setState({ socios: response.data });
@@ -144,7 +144,7 @@ class IngresoLectura extends React.Component {
     }
 
     getServicios(socioId, procesoId) {
-        axios.get(`http://localhost:8000/api/proceso/${procesoId}/socio/${socioId}/servicios`)
+        axios.get(`http://apiapr.lucasbravopy.cl/api/proceso/${procesoId}/socio/${socioId}/servicios`)
             .then(response => {
                 this.setState({ servicios: response.data });
             })
@@ -155,7 +155,7 @@ class IngresoLectura extends React.Component {
 
     addServiceValue(serviceId, value) {
         // Aquí realizarías la llamada POST a la API
-        axios.post('http://localhost:8000/api/servicio/addValue', {
+        axios.post('http://apiapr.lucasbravopy.cl/api/servicio/addValue', {
             servicioId: serviceId,
             valor: value
         })
@@ -186,7 +186,7 @@ class IngresoLectura extends React.Component {
         }
     
         try {
-            const response = await axios.post('http://localhost:8000/api/lectura-agua', { // Asume que tienes una ruta en tu API para esto
+            const response = await axios.post('http://apiapr.lucasbravopy.cl/api/lectura-agua', { // Asume que tienes una ruta en tu API para esto
                 socio_id: this.state.selectedSocio.id, // Supongo que el backend necesita el ID del socio
                 consumption_value: this.state.consumptionValue,
                 proceso_id: this.state.selectedProceso.id,
@@ -206,7 +206,7 @@ class IngresoLectura extends React.Component {
     }
 
     getWaterReading(socioId, procesoId) {
-        axios.get(`http://localhost:8000/api/lectura-agua/socio/${socioId}/proceso/${procesoId}`)
+        axios.get(`http://apiapr.lucasbravopy.cl/api/lectura-agua/socio/${socioId}/proceso/${procesoId}`)
             .then(response => {
                 this.setState({ waterReading: response.data });
 
@@ -250,7 +250,7 @@ addNewService() {
         valor: newServiceValue
     };
 
-    fetch("http://localhost:8000/api/socio-servicio-proceso", {
+    fetch("http://apiapr.lucasbravopy.cl/api/socio-servicio-proceso", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -288,7 +288,7 @@ getServiciosPorSocioYProceso() {
 
     if (!selectedSocio || !selectedProceso) return;  // No continuar si no hay socio y proceso seleccionados
 
-    fetch(`http://localhost:8000/api/socio/${selectedProceso.id}/${selectedSocio.id}`)
+    fetch(`http://apiapr.lucasbravopy.cl/api/socio/${selectedProceso.id}/${selectedSocio.id}`)
         .then(response => response.json())
         .then(data => {
             this.setState({ servicios: data });

@@ -21,7 +21,7 @@ class IngresoSector extends React.Component {
     }
 
     getSectores() {
-        axios.get('http://localhost:8000/api/sectores')
+        axios.get('http://apiapr.lucasbravopy.cl/api/sectores')
             .then(response => {
                 this.setState({ sectores: response.data });
             })
@@ -40,7 +40,7 @@ class IngresoSector extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
         
-        axios.post('http://localhost:8000/api/sectores', this.state)
+        axios.post('http://apiapr.lucasbravopy.cl/api/sectores', this.state)
             .then(response => {
                 console.log(response);
                 this.getSectores();

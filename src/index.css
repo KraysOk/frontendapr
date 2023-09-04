@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* En tu archivo CSS o en tu componente de estilo */
+.custom-toggler .navbar-toggler-icon {
+  color: white; /* Establece el color del ícono en blanco */
+}

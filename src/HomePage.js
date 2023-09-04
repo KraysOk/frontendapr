@@ -15,8 +15,8 @@ function HomePage() {
         <Router>
             <div>
                 <Navbar bg="dark" expand="lg">
-                    <Navbar.Brand href="#home" className='text-white'><Link to="/">Mi Página</Link></Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Navbar.Brand href="#home" className='text-white'><Link to="/">APR</Link></Navbar.Brand>
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" className="custom-toggler" style={{ backgroundColor: 'white' }}/>
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mr-auto">
                             <Nav.Link href="#home" className='text-white'>Inicio</Nav.Link>
@@ -41,7 +41,7 @@ function HomePage() {
                 </Navbar>
                 <Container fluid style={{paddingLeft: 0}}>
                     <div className="d-flex">
-                        <div className="p-2" style={{minWidth: "200px", backgroundColor: "#212529", height: "100vh", color: "#fff"}}>Sidebar</div>
+                        <div className="p-2" style={{minWidth: "150px", backgroundColor: "#212529", height: "100vh", color: "#fff"}}>Sidebar</div>
                         <div className="p-2 flex-grow-1">
                                 <Routes>
                                     <Route path="/ingreso-socio" element={<IngresoSocio />} />
