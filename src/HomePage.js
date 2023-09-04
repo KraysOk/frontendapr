@@ -15,7 +15,9 @@ function HomePage() {
         <Router>
             <div>
                 <Navbar bg="dark" expand="lg">
-                    <Navbar.Brand href="#home" className='text-white'><Link to="/">APR</Link></Navbar.Brand>
+                    <Navbar.Brand href="#home">
+                        <span className="text-white fw-bold mx-auto">APR</span>
+                    </Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" className="custom-toggler" style={{ backgroundColor: 'white' }}/>
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mr-auto">
