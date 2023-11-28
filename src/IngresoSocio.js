@@ -1,6 +1,8 @@
 import React from 'react';
-import { Container, Form, Button, Table, Row, Col } from 'react-bootstrap';  // Importar Row y Col
+import { Container, Form, Button, Table, Row, Col, Modal } from 'react-bootstrap';  // Importar Row y Col
 import axios from 'axios';
+
+import { API_HOST } from './config.js';
 
 class IngresoSocio extends React.Component {
     constructor(props) {
@@ -11,8 +13,12 @@ class IngresoSocio extends React.Component {
             email: '',
             telefono: '',
             sector_id: '',
+            rut: '',
             socios: [],
             sectores: [],
+            showMedidorModal: false, // Controla la visibilidad del modal
+            medidores: [], // Datos de medidores
+            medidorId: '',
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -27,7 +33,7 @@ class IngresoSocio extends React.Component {
     }
 
     getSocios() {
-        axios.get('http://apiapr.lucasbravopy.cl/api/socio')
+        axios.get(`${API_HOST}/api/socio`)
             .then(response => {
                 this.setState({ socios: response.data });
             })
@@ -38,7 +44,7 @@ class IngresoSocio extends React.Component {
     }
 
     getSectores() {
-        axios.get('http://apiapr.lucasbravopy.cl/api/sectores')
+        axios.get(`${API_HOST}/api/sectores`)
             .then(response => {
                 this.setState({ sectores: response.data });
             })
@@ -63,11 +69,12 @@ class IngresoSocio extends React.Component {
             email: this.state.email,
             telefono: this.state.telefono,
             sector_id: this.state.sector,
+            rut: this.state.rut,
         };
 
         console.log(nuevoSocio);
         
-        axios.post('http://apiapr.lucasbravopy.cl/api/socio', nuevoSocio)
+        axios.post(`${API_HOST}/api/socio`, nuevoSocio)
             .then(response => {
                 console.log(response);
                 this.getSocios();
@@ -80,7 +87,7 @@ class IngresoSocio extends React.Component {
     }
 
     handleDelete(socioId) {
-        axios.delete(`http://apiapr.lucasbravopy.cl/api/socio/${socioId}`)
+        axios.delete(`${API_HOST}/api/socio/${socioId}`)
             .then(response => {
                 console.log(response);
                 this.getSocios();
@@ -89,6 +96,73 @@ class IngresoSocio extends React.Component {
             .catch(error => {
                 console.error(error);
                 // manejar el error aquí
+            });
+    }
+
+    // Método para abrir el modal de medidores
+    handleAddMedidor = (socioId) => {
+        this.setState({ showMedidorModal: true, medidorId: '', selectedSocioId: socioId }); // Reiniciar el valor del ID del medidor
+        this.getMedidores(socioId);
+    }
+
+
+    // Método para cerrar el modal de medidores
+    closeMedidorModal = () => {
+        this.setState({ showMedidorModal: false });
+    }
+
+    getMedidores = (socioId) => {
+    
+        axios.get(`${API_HOST}/api/socio/${socioId}/medidores`)
+            .then(response => {
+                this.setState({ medidores: response.data });
+            })
+            .catch(error => {
+                console.error(error);
+                // Maneja el error aquí
+            });
+    }
+    
+    // Método para mostrar el modal de eliminación
+    showDeleteConfirmation = (socio) => {
+        this.setState({ showDeleteModal: true, socioToDelete: socio });
+    }
+
+    // Método para ocultar el modal de eliminación
+    hideDeleteConfirmation = () => {
+        this.setState({ showDeleteModal: false, socioToDelete: null });
+    }
+
+    // Método para confirmar la eliminación del socio
+    confirmDelete = () => {
+        const { socioToDelete } = this.state;
+        if (socioToDelete) {
+            // Realiza la eliminación aquí
+            this.handleDelete(socioToDelete.id);
+        }
+        this.hideDeleteConfirmation(); // Cierra el modal
+    }
+
+    // Nueva función para enviar el formulario de medidor con el ID del socio
+    handleAddMedidorSubmit = event => {
+        event.preventDefault();
+
+        const { medidorId, selectedSocioId } = this.state; // Obtener los valores del estado
+
+        const nuevoMedidor = {
+            numero: medidorId,
+            socio_id: selectedSocioId, // Incluir el ID del socio en el objeto del medidor
+        };
+
+        // Envía la solicitud para agregar un medidor
+        axios.post(`${API_HOST}/api/medidor`, nuevoMedidor)
+            .then(response => {
+                console.log(response);
+                this.getMedidores(selectedSocioId); // Actualizar la lista de medidores
+            })
+            .catch(error => {
+                console.error(error);
+                // Manejar el error aquí
             });
     }
     
@@ -101,6 +175,10 @@ class IngresoSocio extends React.Component {
                     <Col>
                         <h3>Ingreso Socio</h3>
                         <Form onSubmit={this.handleSubmit}>
+                            <Form.Group controlId="rut">
+                                <Form.Label>RUT</Form.Label>
+                                <Form.Control type="text" placeholder="RUT" name="rut" value={this.state.rut} onChange={this.handleChange} />
+                            </Form.Group>
                             <Form.Group controlId="nombre">
                                 <Form.Label>Nombre</Form.Label>
                                 <Form.Control type="text" placeholder="Nombre" name="nombre" value={this.state.nombre} onChange={this.handleChange} />
@@ -141,6 +219,7 @@ class IngresoSocio extends React.Component {
                         <Table striped bordered hover>
                             <thead>
                                 <tr>
+                                    <th>RUT</th>
                                     <th>Nombre</th>
                                     <th>Apellido</th>
                                     <th>Email</th>
@@ -152,14 +231,18 @@ class IngresoSocio extends React.Component {
                             <tbody>
                                 {this.state.socios.map(socio => 
                                     <tr key={socio.id}>
+                                        <td>{socio.rut}</td>
                                         <td>{socio.nombre}</td>
                                         <td>{socio.apellido}</td>
                                         <td>{socio.email}</td>
                                         <td>{socio.telefono}</td>
                                         <td>{socio.sector && socio.sector.nombre}</td>
                                         <td>
-                                            <Button variant="danger" onClick={() => this.handleDelete(socio.id)}>
+                                            <Button variant="danger" onClick={() => this.showDeleteConfirmation(socio)}>
                                                 Eliminar
+                                            </Button>
+                                            <Button variant="primary" onClick={() => this.handleAddMedidor(socio.id)}>
+                                                Agregar Medidor
                                             </Button>
                                         </td>
                                     </tr>
@@ -168,6 +251,131 @@ class IngresoSocio extends React.Component {
                         </Table>
                     </Col>
                 </Row>
+                <Modal show={this.state.showMedidorModal} onHide={this.closeMedidorModal}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Medidores del Socio</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {/* Listado de medidores */}
+                        <Table striped bordered hover>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Numero</th> {/* Agrega los nombres de los campos que tiene tu medidor */}
+                                    {/* ... Otros encabezados según los campos de tu modelo de medidor ... */}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.state.medidores.map(medidor => 
+                                    <tr key={medidor.id}>
+                                        <td>{medidor.id}</td>
+                                        <td>{medidor.numero}</td> 
+                                    </tr>
+                                )}
+                            </tbody>
+                        </Table>
+                        <h3>Agregar Nuevo Medidor</h3>
+                        <Form onSubmit={this.handleAddMedidorSubmit}>
+                            <Form.Group controlId="medidorId">
+                                <Form.Label>ID del Medidor</Form.Label>
+                                <Form.Control type="text" placeholder="ID del Medidor" name="medidorId" value={this.state.medidorId} onChange={this.handleChange} />
+                            </Form.Group>
+                            <Button variant="primary" type="submit">
+                                Agregar Medidor
+                            </Button>
+                        </Form>
+                    </Modal.Body>
+                </Modal>
+                {/* Modal para confirmación de eliminación */}
+                <Modal show={this.state.showDeleteModal} onHide={this.hideDeleteConfirmation}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Eliminar Socio</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        ¿Está seguro de que desea eliminar a este socio?
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={this.hideDeleteConfirmation}>
+                            Cancelar
+                        </Button>
+                        <Button variant="danger" onClick={this.confirmDelete}>
+                            Eliminar
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal show={this.state.showEditModal} onHide={this.closeEditModal}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Editar Socio</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form>
+                            <Form.Group controlId="editedNombre">
+                                <Form.Label>Nombre</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Nombre"
+                                    name="editedNombre"
+                                    value={this.state.editedNombre}
+                                    onChange={this.handleChange}
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="editedApellido">
+                                <Form.Label>Apellido</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Apellido"
+                                    name="editedApellido"
+                                    value={this.state.editedApellido}
+                                    onChange={this.handleChange}
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="editedEmail">
+                                <Form.Label>Email</Form.Label>
+                                <Form.Control
+                                    type="email"
+                                    placeholder="Email"
+                                    name="editedEmail"
+                                    value={this.state.editedEmail}
+                                    onChange={this.handleChange}
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="editedTelefono">
+                                <Form.Label>Teléfono</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Teléfono"
+                                    name="editedTelefono"
+                                    value={this.state.editedTelefono}
+                                    onChange={this.handleChange}
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="editedSector">
+                                <Form.Label>Sector</Form.Label>
+                                <Form.Control
+                                    as="select"
+                                    name="editedSector"
+                                    value={this.state.editedSector}
+                                    onChange={this.handleChange}
+                                >
+                                    <option>Seleccione un sector...</option>
+                                    {this.state.sectores.map(sector => (
+                                        <option key={sector.id} value={sector.id}>
+                                            {sector.nombre}
+                                        </option>
+                                    ))}
+                                </Form.Control>
+                            </Form.Group>
+                        </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={this.closeEditModal}>
+                            Cancelar
+                        </Button>
+                        <Button variant="primary" onClick={this.handleUpdate}>
+                            Guardar Cambios
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </Container>
         );
     }

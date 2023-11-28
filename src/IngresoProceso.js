@@ -27,7 +27,7 @@ class IngresoProceso extends React.Component {
     }
 
     getProcesos() {
-        axios.get('http://apiapr.lucasbravopy.cl/api/procesos')
+        axios.get('http://localhost:8000/api/procesos')
             .then(response => {
                 this.setState({ procesos: response.data });
             })
@@ -37,7 +37,7 @@ class IngresoProceso extends React.Component {
     }
 
     getTiposProceso() {
-        axios.get('http://apiapr.lucasbravopy.cl/api/tipos-proceso')
+        axios.get('http://localhost:8000/api/tipos-proceso')
             .then(response => {
                 this.setState({ tiposProceso: response.data });
             })
@@ -65,7 +65,7 @@ class IngresoProceso extends React.Component {
 
         console.log(nuevoProceso);
         
-        axios.post('http://apiapr.lucasbravopy.cl/api/procesos', nuevoProceso)
+        axios.post('http://localhost:8000/api/procesos', nuevoProceso)
             .then(response => {
                 console.log(response);
                 this.getProcesos();
@@ -96,7 +96,7 @@ class IngresoProceso extends React.Component {
             }
     
             // Envía el nuevo tipo a la API
-            axios.post('http://apiapr.lucasbravopy.cl/api/tipos-proceso', { name: nuevoTipo })
+            axios.post('http://localhost:8000/api/tipos-proceso', { name: nuevoTipo })
                 .then(response => {
                     console.log(response);
                     this.handleCloseModal();

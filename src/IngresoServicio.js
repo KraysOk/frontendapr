@@ -20,7 +20,7 @@ class IngresoServicio extends React.Component {
     }
 
     getServicios() {
-        axios.get('http://apiapr.lucasbravopy.cl/api/servicios')
+        axios.get('http://localhost:8000/api/servicios')
             .then(response => {
                 this.setState({ servicios: response.data });
             })
@@ -44,7 +44,7 @@ class IngresoServicio extends React.Component {
 
         console.log(nuevoServicio);
         
-        axios.post('http://apiapr.lucasbravopy.cl/api/servicios', nuevoServicio)
+        axios.post('http://localhost:8000/api/servicios', nuevoServicio)
             .then(response => {
                 console.log(response);
                 this.getServicios();
@@ -55,7 +55,7 @@ class IngresoServicio extends React.Component {
     }
 
     handleDelete(servicioId) {
-        axios.delete(`http://apiapr.lucasbravopy.cl/api/servicios/${servicioId}`)
+        axios.delete(`http://localhost:8000/api/servicios/${servicioId}`)
             .then(response => {
                 console.log(response);
                 this.getServicios();

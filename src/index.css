@@ -16,3 +16,11 @@ code {
 .custom-toggler .navbar-toggler-icon {
   color: white; /* Establece el color del ícono en blanco */
 }
+
+.content-container {
+  background-color: #fff; /* Fondo blanco */
+  border-radius: 10px; /* Bordes redondeados */
+  padding: 20px; /* Espaciado interno */
+  margin: 20px; /* Espaciado externo */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}

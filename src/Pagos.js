@@ -23,7 +23,7 @@ class Pagos extends React.Component {
 
     fetchSociosWithPagos = async () => {
         try {
-            const response = await axios.get('http://apiapr.lucasbravopy.cl/api/socios-with-pagos'); // Replace with your API endpoint
+            const response = await axios.get('http://localhost:8000/api/socios-with-pagos'); // Replace with your API endpoint
             this.setState({ socios: response.data });
         } catch (error) {
             console.error(error);
@@ -60,7 +60,7 @@ class Pagos extends React.Component {
     }
 
     getProcesos() {
-        axios.get('http://apiapr.lucasbravopy.cl/api/procesos')
+        axios.get('http://localhost:8000/api/procesos')
             .then(response => {
                 this.setState({ procesos: response.data });
             })
@@ -83,7 +83,7 @@ class Pagos extends React.Component {
 
     getSocios() {
         if (this.state.selectedProceso) {
-        axios.get(`http://apiapr.lucasbravopy.cl/api/socio/${this.state.selectedProceso.id}`, {
+        axios.get(`http://localhost:8000/api/socio/${this.state.selectedProceso.id}`, {
         })
         .then(response => {
             this.setState({ socios: response.data });
@@ -109,11 +109,11 @@ class Pagos extends React.Component {
                 monto_total: this.calcularMontoTotal(socioId) // Implementa la función para calcular el monto total
             };
 
-            const response = await axios.post('http://apiapr.lucasbravopy.cl/api/pagos', pagoData);
+            const response = await axios.post('http://localhost:8000/api/pagos', pagoData);
 
             if (response.data && response.data.success) {
                 // Call getSociosWithPaymentStatus to update the list of socios
-                const sociosResponse = await axios.get(`http://apiapr.lucasbravopy.cl/api/socio/${this.state.selectedProceso.id}`);
+                const sociosResponse = await axios.get(`http://localhost:8000/api/socio/${this.state.selectedProceso.id}`);
                 const updatedSocios = sociosResponse.data;
     
                 this.setState({
