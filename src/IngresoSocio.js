@@ -172,7 +172,7 @@ class IngresoSocio extends React.Component {
             <Container>
                 <h1>Socios</h1>
                 <Row>
-                    <Col>
+                    <Col md={3}>
                         <h3>Ingreso Socio</h3>
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Group controlId="rut">

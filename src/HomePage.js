@@ -14,7 +14,7 @@ import Tramos from './Tramos';
 
 function HomePage() {
     return (
-        <Router>
+        <Router basename="/apr">
             <div>
                 <Navbar bg="light" expand="lg" className='px-3'>
                     <Navbar.Brand href="#home" className="mx-auto">
