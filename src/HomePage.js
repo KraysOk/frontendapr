@@ -18,8 +18,8 @@ function HomePage() {
         <Router basename="/apr">
             <div>
                 <Navbar bg="light" expand="lg" className='px-3'>
-                    <Navbar.Brand href="/apr/inicio" className="mx-auto">
-                        <span className="text-dark fw-bold text-center">APR</span>
+                    <Navbar.Brand className="mx-auto">
+                            <Link to="inicio"><span className="text-dark fw-bold text-center">APR</span></Link>
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" className="custom-toggler" style={{ backgroundColor: 'white' }}/>
                     <Navbar.Collapse id="basic-navbar-nav">
