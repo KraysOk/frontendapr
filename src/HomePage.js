@@ -10,6 +10,7 @@ import IngresoProceso from './IngresoProceso';
 import IngresoLectura from './IngresoLectura';
 import Pagos from './Pagos';
 import Tramos from './Tramos';
+import Inicio from './Inicio';
 
 
 function HomePage() {
@@ -17,7 +18,7 @@ function HomePage() {
         <Router basename="/apr">
             <div>
                 <Navbar bg="light" expand="lg" className='px-3'>
-                    <Navbar.Brand href="#home" className="mx-auto">
+                    <Navbar.Brand href="/apr/inicio" className="mx-auto">
                         <span className="text-dark fw-bold text-center">APR</span>
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" className="custom-toggler" style={{ backgroundColor: 'white' }}/>
@@ -57,6 +58,7 @@ function HomePage() {
                                     <Route path="/ingreso-lectura" element={<IngresoLectura />} />
                                     <Route path="/pagos" element={<Pagos />} />
                                     <Route path="/tramos" element={<Tramos />} />
+                                    <Route path="/inicio" element={<Inicio />} />
                                 </Routes>
                         </div>
                     </div>
