@@ -23,7 +23,7 @@ class Tramos extends React.Component {
 
     // Recuperar la lista de tramos desde el backend
     getTramos() {
-        axios.get('http://localhost:8000/api/tramos')
+        axios.get(`${API_HOST}/api/tramos`)
             .then(response => {
                 this.setState({ tramos: response.data });
             })
@@ -32,37 +32,57 @@ class Tramos extends React.Component {
             });
     }
 
-    // Agregar un nuevo tramo
     addTramo() {
-        // Parsea los valores de inicio y fin como números
-        const inicio = parseFloat(this.state.inicioTramo);
-        const fin = parseFloat(this.state.finTramo);
-        
-        // Verifica si el inicio es menor o igual al fin
-        if (!isNaN(inicio) && !isNaN(fin) && inicio <= fin) {
-            axios.post('http://localhost:8000/api/tramos', {
-                nombre: this.state.nombreTramo,
-                inicio: this.state.inicioTramo,
-                fin: this.state.finTramo,
-                valor: this.state.valorTramo
-            })
-            .then(response => {
-                this.getTramos(); // Refresca la lista de tramos después de agregar uno
-                this.setState({ // Limpia los campos del formulario
-                    nombreTramo: '',
-                    inicioTramo: '',
-                    finTramo: '',
-                    valorTramo: ''
-                });
-                alert("Tramo agregado exitosamente.");
-            })
-            .catch(error => {
-                console.error(error);
+        // Parsea los valores de inicio y fin como números enteros
+        const inicio = parseInt(this.state.inicioTramo, 10);
+        const fin = parseInt(this.state.finTramo, 10);
+        const valor = parseInt(this.state.valorTramo, 10);
+    
+        // Verifica si los valores son enteros positivos
+        if (!isNaN(inicio) && !isNaN(fin) && !isNaN(valor) && inicio >= 0 && fin >= 0 && valor >= 0) {
+            // Verifica si hay algún tramo existente que se superpone con el nuevo tramo
+            const tramosSuperpuestos = this.state.tramos.some(tramo => {
+                const tramoInicio = parseInt(tramo.inicio, 10);
+                const tramoFin = parseInt(tramo.fin, 10);
+                
+                return (
+                    // Comprueba si el inicio del nuevo tramo está dentro de un tramo existente
+                    (inicio >= tramoInicio && inicio <= tramoFin) ||
+                    // Comprueba si el fin del nuevo tramo está dentro de un tramo existente
+                    (fin >= tramoInicio && fin <= tramoFin) ||
+                    // Comprueba si el nuevo tramo envuelve completamente a un tramo existente
+                    (inicio <= tramoInicio && fin >= tramoFin)
+                );
             });
+    
+            if (!tramosSuperpuestos) {
+                axios.post(`${API_HOST}/api/tramos`, {
+                    nombre: this.state.nombreTramo,
+                    inicio: inicio,
+                    fin: fin,
+                    valor: valor
+                })
+                .then(response => {
+                    this.getTramos(); // Refresca la lista de tramos después de agregar uno
+                    this.setState({ // Limpia los campos del formulario
+                        nombreTramo: '',
+                        inicioTramo: '',
+                        finTramo: '',
+                        valorTramo: ''
+                    });
+                    alert("Tramo agregado exitosamente.");
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            } else {
+                alert("El nuevo tramo se superpone con tramos existentes. Por favor, elige valores de inicio y fin que no se superpongan.");
+            }
         } else {
-            alert("El valor de inicio debe ser menor o igual al valor de fin.");
+            alert("Los valores de inicio, fin y valor deben ser enteros positivos.");
         }
     }
+    
 
     handleChange(event) {
         this.setState({
@@ -148,6 +168,21 @@ class Tramos extends React.Component {
         }
     }
 
+    deleteTramo(tramoId) {
+        // Realiza la solicitud para eliminar el tramo con el ID tramoId
+        // Después de eliminar, actualiza la lista de tramos
+        axios.delete(`${API_HOST}/api/tramos/${tramoId}`)
+            .then(response => {
+                console.log(response);
+                this.getTramos(); // Actualiza la lista después de la eliminación
+                alert("Tramo eliminado exitosamente.");
+            })
+            .catch(error => {
+                console.error(error);
+                // manejar el error aquí
+            });
+    }
+
     render() {
         return (
             <Container>
@@ -172,6 +207,11 @@ class Tramos extends React.Component {
                                     <td>{tramo.inicio}</td>
                                     <td>{tramo.fin}</td>
                                     <td>{tramo.valor}</td>
+                                    <td>
+                                        <Button variant="danger" onClick={() => this.deleteTramo(tramo.id)}>
+                                            Eliminar
+                                        </Button>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
