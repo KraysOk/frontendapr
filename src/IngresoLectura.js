@@ -2,6 +2,8 @@ import React from 'react';
 import { Container, Table, Row, Col, Form, Button  } from 'react-bootstrap';
 import axios from 'axios';
 
+import { API_HOST } from './config.js';
+
 class IngresoLectura extends React.Component {
     constructor(props) {
         super(props);
@@ -55,7 +57,7 @@ class IngresoLectura extends React.Component {
 
     // Recuperar la lista de tramos desde el backend
     getTramos() {
-        axios.get('http://localhost:8000/api/tramos')
+        axios.get(`${API_HOST}/api/tramos`)
             .then(response => {
                 this.setState({ tramos: response.data });
             })
@@ -66,7 +68,7 @@ class IngresoLectura extends React.Component {
 
     // Agregar un nuevo tramo
     addTramo() {
-        axios.post('http://localhost:8000/api/tramos', {
+        axios.post(`${API_HOST}/api/tramos`, {
             nombre: this.state.nombreTramo,
             inicio: this.state.inicioTramo,
             fin: this.state.finTramo,
@@ -88,7 +90,7 @@ class IngresoLectura extends React.Component {
     }
 
     getServiciosDisponibles() {
-        axios.get('http://localhost:8000/api/servicios')
+        axios.get(`${API_HOST}/api/servicios`)
             .then(response => {
                 this.setState({ serviciosDisponibles: response.data });
             })
@@ -98,7 +100,7 @@ class IngresoLectura extends React.Component {
     }
 
     getProcesos() {
-        axios.get('http://localhost:8000/api/procesos')
+        axios.get(`${API_HOST}/api/procesos`)
             .then(response => {
                 this.setState({ procesos: response.data });
             })
@@ -109,7 +111,7 @@ class IngresoLectura extends React.Component {
 
     getSocios() {
         if (this.state.selectedProceso) {
-        axios.get(`http://localhost:8000/api/socio/${this.state.selectedProceso.id}`, {
+        axios.get(`${API_HOST}/api/socio/${this.state.selectedProceso.id}`, {
         })
         .then(response => {
             this.setState({ socios: response.data });
@@ -144,7 +146,7 @@ class IngresoLectura extends React.Component {
     }
 
     getServicios(socioId, procesoId) {
-        axios.get(`http://localhost:8000/api/proceso/${procesoId}/socio/${socioId}/servicios`)
+        axios.get(`${API_HOST}/api/proceso/${procesoId}/socio/${socioId}/servicios`)
             .then(response => {
                 this.setState({ servicios: response.data });
             })
@@ -155,7 +157,7 @@ class IngresoLectura extends React.Component {
 
     addServiceValue(serviceId, value) {
         // Aquí realizarías la llamada POST a la API
-        axios.post('http://localhost:8000/api/servicio/addValue', {
+        axios.post(`${API_HOST}/api/servicio/addValue`, {
             servicioId: serviceId,
             valor: value
         })
@@ -186,7 +188,7 @@ class IngresoLectura extends React.Component {
         }
     
         try {
-            const response = await axios.post('http://localhost:8000/api/lectura-agua', { // Asume que tienes una ruta en tu API para esto
+            const response = await axios.post(`${API_HOST}/api/lectura-agua`, { // Asume que tienes una ruta en tu API para esto
                 socio_id: this.state.selectedSocio.id, // Supongo que el backend necesita el ID del socio
                 consumption_value: this.state.consumptionValue,
                 proceso_id: this.state.selectedProceso.id,
@@ -206,7 +208,7 @@ class IngresoLectura extends React.Component {
     }
 
     getWaterReading(socioId, procesoId) {
-        axios.get(`http://localhost:8000/api/lectura-agua/socio/${socioId}/proceso/${procesoId}`)
+        axios.get(`${API_HOST}/api/lectura-agua/socio/${socioId}/proceso/${procesoId}`)
             .then(response => {
                 this.setState({ waterReading: response.data });
 
@@ -250,7 +252,7 @@ addNewService() {
         valor: newServiceValue
     };
 
-    fetch("http://localhost:8000/api/socio-servicio-proceso", {
+    fetch(`${API_HOST}/api/socio-servicio-proceso`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -288,7 +290,7 @@ getServiciosPorSocioYProceso() {
 
     if (!selectedSocio || !selectedProceso) return;  // No continuar si no hay socio y proceso seleccionados
 
-    fetch(`http://localhost:8000/api/socio/${selectedProceso.id}/${selectedSocio.id}`)
+    fetch(`${API_HOST}/api/socio/${selectedProceso.id}/${selectedSocio.id}`)
         .then(response => response.json())
         .then(data => {
             this.setState({ servicios: data });
@@ -461,67 +463,6 @@ calculateTotalFacturado() {
                             />
                         </Form.Group>
                         <Button type="submit">Agregar Lectura</Button>
-                    </Form>
-                </Col>
-            </Row>
-            <Row>
-                {/* ... otras columnas ... */}
-                <Col md={6}>
-                    {/* Listado de Tramos */}
-                    <h2>Tramos</h2>
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Inicio</th>
-                                <th>Fin</th>
-                                <th>Valor</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.state.tramos.map(tramo => (
-                                <tr key={tramo.id}>
-                                    <td>{tramo.id}</td>
-                                    <td>{tramo.inicio}</td>
-                                    <td>{tramo.fin}</td>
-                                    <td>{tramo.valor}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
-
-                    {/* Formulario para agregar tramos */}
-                    <h3>Agregar Nuevo Tramo</h3>
-                    <Form onSubmit={e => { e.preventDefault(); this.addTramo(); }}>
-                        <Row className="mb-3">
-                            <Col>
-                                <Form.Label>Inicio:</Form.Label>
-                                <Form.Control 
-                                    type="text" 
-                                    value={this.state.inicioTramo}
-                                    onChange={e => this.setState({ inicioTramo: e.target.value })}
-                                />
-                            </Col>
-                            <Col>
-                                <Form.Label>Fin:</Form.Label>
-                                <Form.Control 
-                                    type="text" 
-                                    value={this.state.finTramo}
-                                    onChange={e => this.setState({ finTramo: e.target.value })}
-                                />
-                            </Col>
-                        </Row>
-                        <Row className="mb-3">
-                            <Col>
-                                <Form.Label>Valor:</Form.Label>
-                                <Form.Control 
-                                    type="text" 
-                                    value={this.state.valorTramo}
-                                    onChange={e => this.setState({ valorTramo: e.target.value })}
-                                />
-                            </Col>
-                        </Row>
-                        <Button type="submit">Agregar Tramo</Button>
                     </Form>
                 </Col>
             </Row>

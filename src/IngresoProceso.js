@@ -2,6 +2,8 @@ import React from 'react';
 import { Container, Form, Button, Table, Row, Col,Modal  } from 'react-bootstrap';
 import axios from 'axios';
 
+import { API_HOST } from './config.js';
+
 class IngresoProceso extends React.Component {
     constructor(props) {
         super(props);
@@ -27,7 +29,7 @@ class IngresoProceso extends React.Component {
     }
 
     getProcesos() {
-        axios.get('http://localhost:8000/api/procesos')
+        axios.get(`${API_HOST}/api/procesos`)
             .then(response => {
                 this.setState({ procesos: response.data });
             })
@@ -37,7 +39,7 @@ class IngresoProceso extends React.Component {
     }
 
     getTiposProceso() {
-        axios.get('http://localhost:8000/api/tipos-proceso')
+        axios.get(`${API_HOST}/api/tipos-proceso`)
             .then(response => {
                 this.setState({ tiposProceso: response.data });
             })
@@ -65,7 +67,7 @@ class IngresoProceso extends React.Component {
 
         console.log(nuevoProceso);
         
-        axios.post('http://localhost:8000/api/procesos', nuevoProceso)
+        axios.post(`${API_HOST}/api/procesos`, nuevoProceso)
             .then(response => {
                 console.log(response);
                 this.getProcesos();
@@ -96,7 +98,7 @@ class IngresoProceso extends React.Component {
             }
     
             // Envía el nuevo tipo a la API
-            axios.post('http://localhost:8000/api/tipos-proceso', { name: nuevoTipo })
+            axios.post(`${API_HOST}/api/tipos-proceso`, { name: nuevoTipo })
                 .then(response => {
                     console.log(response);
                     this.handleCloseModal();

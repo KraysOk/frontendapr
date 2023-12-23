@@ -24,8 +24,6 @@ function HomePage() {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" className="custom-toggler" style={{ backgroundColor: 'white' }}/>
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mr-auto">
-                            <Nav.Link href="#home" className='text-dark'>Inicio</Nav.Link>
-                            <Nav.Link href="#link" className='text-dark'>Link</Nav.Link>
                             <NavDropdown title={<span className='text-dark'>Procesos</span>} id="basic-nav-dropdown">
                                 <NavDropdown.Item><Link to="ingreso-proceso">Procesos</Link></NavDropdown.Item>
                                 <NavDropdown.Divider />

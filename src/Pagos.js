@@ -2,6 +2,8 @@ import React from 'react';
 import { Container, Form, Button, Table } from 'react-bootstrap';
 import axios from 'axios';
 
+import { API_HOST } from './config.js';
+
 class Pagos extends React.Component {
     state = {
         procesos: [],
@@ -23,7 +25,7 @@ class Pagos extends React.Component {
 
     fetchSociosWithPagos = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/api/socios-with-pagos'); // Replace with your API endpoint
+            const response = await axios.get(`${API_HOST}/api/socios-with-pagos`); // Replace with your API endpoint
             this.setState({ socios: response.data });
         } catch (error) {
             console.error(error);
@@ -45,7 +47,7 @@ class Pagos extends React.Component {
         event.preventDefault();
         try {
             // Suponiendo que la API espera un objeto de pago en el body
-            const response = await axios.post('/api/pagos', this.state.nuevoPago);
+            const response = await axios.post(`${API_HOST}/api/pagos`, this.state.nuevoPago);
             if (response.data && response.data.success) {
                 // Actualiza la lista de pagos o muestra un mensaje de éxito
                 this.setState(prevState => ({
@@ -60,7 +62,7 @@ class Pagos extends React.Component {
     }
 
     getProcesos() {
-        axios.get('http://localhost:8000/api/procesos')
+        axios.get(`${API_HOST}/api/procesos`)
             .then(response => {
                 this.setState({ procesos: response.data });
             })
@@ -83,7 +85,7 @@ class Pagos extends React.Component {
 
     getSocios() {
         if (this.state.selectedProceso) {
-        axios.get(`http://localhost:8000/api/socio/${this.state.selectedProceso.id}`, {
+        axios.get(`${API_HOST}/api/socio/${this.state.selectedProceso.id}`, {
         })
         .then(response => {
             this.setState({ socios: response.data });
@@ -109,11 +111,11 @@ class Pagos extends React.Component {
                 monto_total: this.calcularMontoTotal(socioId) // Implementa la función para calcular el monto total
             };
 
-            const response = await axios.post('http://localhost:8000/api/pagos', pagoData);
+            const response = await axios.post(`${API_HOST}/api/pagos`, pagoData);
 
             if (response.data && response.data.success) {
                 // Call getSociosWithPaymentStatus to update the list of socios
-                const sociosResponse = await axios.get(`http://localhost:8000/api/socio/${this.state.selectedProceso.id}`);
+                const sociosResponse = await axios.get(`${API_HOST}/api/socio/${this.state.selectedProceso.id}`);
                 const updatedSocios = sociosResponse.data;
     
                 this.setState({

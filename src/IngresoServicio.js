@@ -2,6 +2,8 @@ import React from 'react';
 import { Container, Form, Button, Table, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 
+import { API_HOST } from './config.js';
+
 class IngresoServicio extends React.Component {
     constructor(props) {
         super(props);
@@ -20,7 +22,7 @@ class IngresoServicio extends React.Component {
     }
 
     getServicios() {
-        axios.get('http://localhost:8000/api/servicios')
+        axios.get(`${API_HOST}/api/servicios`)
             .then(response => {
                 this.setState({ servicios: response.data });
             })
@@ -44,7 +46,7 @@ class IngresoServicio extends React.Component {
 
         console.log(nuevoServicio);
         
-        axios.post('http://localhost:8000/api/servicios', nuevoServicio)
+        axios.post(`${API_HOST}/api/servicios`, nuevoServicio)
             .then(response => {
                 console.log(response);
                 this.getServicios();
@@ -55,7 +57,7 @@ class IngresoServicio extends React.Component {
     }
 
     handleDelete(servicioId) {
-        axios.delete(`http://localhost:8000/api/servicios/${servicioId}`)
+        axios.delete(`${API_HOST}/api/servicios/${servicioId}`)
             .then(response => {
                 console.log(response);
                 this.getServicios();
